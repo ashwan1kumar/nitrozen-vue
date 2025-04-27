@@ -2,14 +2,14 @@ import * as NitrozenComponents from './components';
 import NitrozenSnackbar from './components/NSnackbar';
 
 let NitrozenVuePlugin = {
-  install: (Vue) => {
+  install: (app) => {
     Object.values(NitrozenComponents).forEach((NComponent) => {
-      Vue.component(NComponent.name, NComponent)
+      app.component(NComponent.name, NComponent)
     });
 
     // Snackbar
-    Vue.use(NitrozenSnackbar);
-    Vue.snackbar.register(
+    app.use(NitrozenSnackbar);
+    app.config.globalProperties.$snackbar.register(
       'show',
       message => message,
       {
@@ -17,7 +17,7 @@ let NitrozenVuePlugin = {
         duration: 2000
       }
     );
-    Vue.snackbar.register(
+    app.config.globalProperties.$snackbar.register(
       'showSuccess',
       message => message,
       {
@@ -26,7 +26,7 @@ let NitrozenVuePlugin = {
         type: 'success'
       }
     );
-    Vue.snackbar.register(
+    app.config.globalProperties.$snackbar.register(
       'showError',
       message => message,
       {
@@ -35,7 +35,7 @@ let NitrozenVuePlugin = {
         type: 'error'
       }
     );
-    Vue.snackbar.register(
+    app.config.globalProperties.$snackbar.register(
       'showWarning',
       message => message,
       {

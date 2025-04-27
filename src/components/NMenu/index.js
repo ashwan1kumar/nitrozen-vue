@@ -1,3 +1,3 @@
-import NMenu from './NMenu';
+import NMenu from './NMenu.vue';
 
 export default NMenu

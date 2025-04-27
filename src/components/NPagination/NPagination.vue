@@ -97,7 +97,7 @@ export default {
      *  }
      * `
      */
-    value: {
+    modelValue: {
       type: Object,
       required: true,
       default: () => {
@@ -124,12 +124,12 @@ export default {
     this.setDefaults();
   },
   data: () => {
-    return {};
+    return {selectedPageSize: null};
   },
   computed: {
     pages: function() {
-      if (this.value.limit > 0) {
-        return Math.ceil(this.value.total / this.value.limit);
+      if (this.modelValue.limit > 0) {
+        return Math.ceil(this.modelValue.total / this.modelValue.limit);
       }
       return 0;
     },
@@ -138,8 +138,8 @@ export default {
         return { text: p, value: p };
       });
       if (!this.selectedPageSize) {
-        this.selectedPageSize = this.value.limit
-          ? this.value.limit
+        this.selectedPageSize = this.modelValue.limit
+          ? this.modelValue.limit
           : po.length > 0
           ? po[0].value
           : null;
@@ -147,46 +147,46 @@ export default {
       return po;
     },
     firstRecord() {
-      return this.value.limit * (this.value.current - 1) + 1;
+      return this.modelValue.limit * (this.modelValue.current - 1) + 1;
     },
     lastRecord() {
-      return this.value.limit * this.value.current < this.value.total
-        ? this.value.limit * this.value.current
-        : this.value.total;
+      return this.modelValue.limit * this.modelValue.current < this.modelValue.total
+        ? this.modelValue.limit * this.modelValue.current
+        : this.modelValue.total;
     },
     countsText() {
       let txt = "";
       if (this.showTotal) {
         txt = ` ${this.firstRecord} - ${this.lastRecord}`;
-        txt += ` of ${this.value.total}`;
+        txt += ` of ${this.modelValue.total}`;
         txt += ` ${this.name || ""}`;
-      } else if (this.value.currentTotal) {
-        txt = `Showing ${this.value.currentTotal} ${this.name}`;
+      } else if (this.modelValue.currentTotal) {
+        txt = `Showing ${this.modelValue.currentTotal} ${this.name}`;
       } else {
         txt = "";
       }
       return txt;
     },
     showTotal() {
-      if (this.value.total) {
+      if (this.modelValue.total) {
         return true;
       }
       return false;
     },
     showPrev() {
-      if (this.value.total && this.value.current === 1) {
+      if (this.modelValue.total && this.modelValue.current === 1) {
         return false;
       }
-      if (this.mode === MODE_CURSOR && !this.value.prevPage) {
+      if (this.mode === MODE_CURSOR && !this.modelValue.prevPage) {
         return false;
       }
       return true;
     },
     showNext() {
-      if (this.value.total && this.value.current >= this.pages) {
+      if (this.modelValue.total && this.modelValue.current >= this.pages) {
         return false;
       }
-      if (this.mode === MODE_CURSOR && !this.value.nextPage) {
+      if (this.mode === MODE_CURSOR && !this.modelValue.nextPage) {
         return false;
       }
       return true;
@@ -194,57 +194,57 @@ export default {
   },
   methods: {
     setDefaults() {
-      if (!this.value.current) {
-        this.$set(this.value, "current", 1);
+      if (!this.modelValue.current) {
+        this.modelValue.current = 1;
       }
     },
     previous() {
-      if (this.value.total) {
-        if (this.value.current === 1) {
+      if (this.modelValue.total) {
+        if (this.modelValue.current === 1) {
           return;
         }
-        this.value.current--;
+        this.modelValue.current--;
       } else if (this.mode === MODE_CURSOR) {
-        if (!this.value.prevPage) return;
-        this.value.nextPage = "";
-        this.value.currentPage = this.value.prevPage;
+        if (!this.modelValue.prevPage) return;
+        this.modelValue.nextPage = "";
+        this.modelValue.currentPage = this.modelValue.prevPage;
       }
       this.change();
       this.$emit('previousClick');
     },
     next() {
-      if (this.value.total) {
-        if (this.value.current >= this.pages) {
-          this.value.current = this.pages;
+      if (this.modelValue.total) {
+        if (this.modelValue.current >= this.pages) {
+          this.modelValue.current = this.pages;
           return;
         }
         if (this.pages === 0) {
-          this.value.current = 0;
+          this.modelValue.current = 0;
           return;
         }
-        this.value.current++;
+        this.modelValue.current++;
       }
       if (this.mode === MODE_CURSOR) {
-        if (!this.value.nextPage) return;
-        this.value.prevPage = "";
-        this.value.currentPage = this.value.nextPage;
+        if (!this.modelValue.nextPage) return;
+        this.modelValue.prevPage = "";
+        this.modelValue.currentPage = this.modelValue.nextPage;
       }
       this.change();
       this.$emit('nextClick');
     },
     pageSizeChange(size) {
-      this.value.current = 1;
-      this.value.limit = size;
+      this.modelValue.current = 1;
+      this.modelValue.limit = size;
       if (this.mode === MODE_CURSOR) {
-        this.value.nextPage = "";
-        this.value.prevPage = "";
-        this.value.currentPage = "";
+        this.modelValue.nextPage = "";
+        this.modelValue.prevPage = "";
+        this.modelValue.currentPage = "";
       }
       this.change();
     },
     change() {
-      this.$emit("input", this.value);
-      this.$emit("change", this.value);
+      this.$emit("update:modelValue", this.modelValue);
+      this.$emit("change", this.modelValue);
     },
   },
 };

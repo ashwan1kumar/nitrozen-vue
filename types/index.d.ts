@@ -1,5 +1,5 @@
 declare module '@gofynd/nitrozen-vue' {
-    import { DirectiveOptions, VueConstructor } from 'vue'
+    import { VueConstructor } from 'vue'
     import * as Nitrozen from '@gofynd/nitrozen-vue'
 
     // Components
@@ -25,9 +25,7 @@ declare module '@gofynd/nitrozen-vue' {
     const NitrozenCustomForm: VueConstructor
 
     // Directives
-    const strokeBtn: DirectiveOptions
-    const flatBtn: DirectiveOptions
-    const clickOutside: DirectiveOptions
+    const NitrozenDirectives: any
 
     export default Nitrozen
     export {
@@ -51,9 +49,6 @@ declare module '@gofynd/nitrozen-vue' {
         NitrozenToggleBtn,
         NitrozenTooltip,
         NitrozenCustomForm,
-
-        strokeBtn,
-        flatBtn,
-        clickOutside
+        NitrozenDirectives
     }
 }

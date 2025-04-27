@@ -31,7 +31,7 @@
               <nitrozen-button
                 v-if="positiveButtonLabel"
                 :theme="`${theme || 'secondary'}`"
-                v-flatBtn
+                v-flat-btn
                 class="nitrozen-dialog-footer-button-margin"
                 @click="close(positiveButtonLabel)"
                 >{{ positiveButtonLabel }}</nitrozen-button
@@ -46,7 +46,7 @@
               <nitrozen-button
                 v-if="negativeButtonLabel"
                 :theme="`${theme || 'secondary'}`"
-                v-strokeBtn
+                v-stroke-btn
                 @click="close(negativeButtonLabel)"
                 >{{ negativeButtonLabel }}</nitrozen-button
               >
@@ -61,16 +61,11 @@
 import NitrozenUuid from "./../../utils/NUuid";
 import NitrozenButton from "./../NBtn";
 import NitrozenInline from "./../NInline";
-import { flatBtn, strokeBtn } from "./../../directives/index";
 export default {
   name: "nitrozen-dialog",
   components: {
     NitrozenButton,
     NitrozenInline,
-  },
-  directives: {
-    flatBtn,
-    strokeBtn,
   },
   props: {
     /**
@@ -171,7 +166,7 @@ export default {
       document.addEventListener("keydown", this.handleESCKey);
     }
   },
-  destroyed() {
+  unmounted() {
     document.removeEventListener("keydown", this.handleESCKey);
   },
 };

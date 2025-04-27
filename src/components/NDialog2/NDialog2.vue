@@ -157,7 +157,7 @@ export default {
       document.addEventListener("keydown", this.handleESCKey);
     }
   },
-  destroyed() {
+  unmounted() {
     document.removeEventListener("keydown", this.handleESCKey);
   },
 };

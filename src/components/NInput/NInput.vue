@@ -61,7 +61,7 @@
         :id="id"
         :ref="id"
         :disabled="disabled"
-        :value="value"
+        :value="modelValue"
         @input="valueChange"
       />
 
@@ -82,7 +82,7 @@
         :ref="id"
         :id="id"
         :placeholder="placeholder"
-        :value="value"
+        :value="modelValue"
         @input="valueChange"
       ></textarea>
 
@@ -121,7 +121,7 @@ export default {
   },
   computed: {
     length: function() {
-      return this.value.length;
+      return this.modelValue.length;
     },
   },
   props: {
@@ -149,7 +149,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    value: {
+    modelValue: {
       type: [Number, String],
       default: '',
     },
@@ -234,7 +234,7 @@ export default {
         value = Number(event.target.value);
       }
 
-      this.$emit('input', value);
+      this.$emit('update:modelValue', value);
       if (this.search) {
         // Do this with debouncing
         this.loaderShow = true;

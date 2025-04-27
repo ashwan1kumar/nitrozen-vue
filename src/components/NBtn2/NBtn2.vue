@@ -1,5 +1,6 @@
 <script>
-import NButtonContent from './../NBtn/NBtnContent';
+import NButtonContent from './../NBtn/NBtnContent.vue';
+import { h } from 'vue';
 
 export default {
     name: 'nitrozen-button-v2',
@@ -45,21 +46,19 @@ export default {
             default: 'default',
         },
     },
-    render(createElement) {
-        const slotElement = createElement(
-            'n-button-content',
+    render() {
+        const nButtonContent = h(
+            NButtonContent,
             {
-                props: {
-                    showProgress: this.showProgress,
-                    icon: this.icon,
-                },
+                showProgress: this.showProgress,
+                icon: this.icon,
             },
             this.$slots.default
         );
 
         let buttonAttrs = {
-            staticClass: 'n-button-v2 ripple',
             class: [
+                'n-button-v2 ripple',
                 {
                     'n-button-v2-secondary': this.theme == 'secondary',
                     'n-button-v2-extra-small': this.size == 'extra-small',
@@ -78,16 +77,13 @@ export default {
                 disabled: this.disabled,
                 type: !this.href && (this.type || 'button'),
             },
-            on: {
-                ...this.$listeners,
-            },
         };
         let tag = 'button';
         if (this.href) {
             tag = 'a';
             buttonAttrs;
         }
-        return createElement(tag, buttonAttrs, [slotElement]);
+        return h(tag, buttonAttrs, [nButtonContent]);
     },
 };
 </script>

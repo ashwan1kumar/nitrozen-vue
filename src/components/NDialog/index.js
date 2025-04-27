@@ -1,3 +1,3 @@
-import NDialog from './NDialog';
+import NDialog from './NDialog.vue';
 export { NDialog }
 export default NDialog;

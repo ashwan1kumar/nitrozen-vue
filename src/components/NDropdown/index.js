@@ -1,3 +1,3 @@
-import NDropdown from './NDropdown';
+import NDropdown from './NDropdown.vue';
 export { NDropdown }
 export default NDropdown;

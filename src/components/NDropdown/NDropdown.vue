@@ -3,133 +3,71 @@
     <label v-if="label" class="nitrozen-dropdown-label">
       {{ label }} {{ required ? " *" : "" }}
       <span class="nitrozen-tooltip-icon" v-if="tooltip != ''">
-        <nitrozen-tooltip
-          :tooltipText="tooltip"
-          position="top"
-        ></nitrozen-tooltip>
+        <nitrozen-tooltip :tooltipText="tooltip" position="top"></nitrozen-tooltip>
       </span>
     </label>
     <div class="nitrozen-select-wrapper" @click="toggle">
-      <div
-        class="nitrozen-select"
-        ref="n_dropdown"
-        v-bind:class="{
-          disabled: disabled,
-          'nitrozen-dropdown-open': showOptions,
-        }"
-      >
+      <div class="nitrozen-select" ref="n_dropdown" v-bind:class="{
+        disabled: disabled,
+        'nitrozen-dropdown-open': showOptions,
+      }">
         <div class="nitrozen-select__trigger">
-          <span
-            v-if="searchable && !disabled"
-            class="nitrozen-searchable-input-container"
-          >
-            <input
-              type="search"
-              v-model="searchInput"
-              @search="searchInputChange"
-              v-on:keyup="searchInputChange"
-              :placeholder="searchInputPlaceholder"
-              :autocomplete="autocomplete"
-
-            />
+          <span v-if="searchable && !disabled" class="nitrozen-searchable-input-container">
+            <input type="search" v-model="searchInput" @search="searchInputChange" v-on:keyup="searchInputChange"
+              :placeholder="searchInputPlaceholder" :autocomplete="autocomplete" />
           </span>
           <span v-else>{{ selectedText }}</span>
           <div class="nitrozen-dropdown-arrow">
             <nitrozen-inline icon="dropdown_arrow_down"></nitrozen-inline>
           </div>
         </div>
-        <div
-          class="nitrozen-options"
-          ref="nitrozen-select-option"
-          v-on:scroll.passive="handleScroll"
-          :class="{ 'nitrozen-dropup': dropUp }"
-        >
+        <div class="nitrozen-options" ref="nitrozen-select-option" v-on:scroll.passive="handleScroll"
+          :class="{ 'nitrozen-dropup': dropUp }">
 
-          <span 
-            v-if="enable_select_all"
-            v-show="!searchInput"
-            class="nitrozen-option ripple"
-            @click="selectItem('all', all_option)"
-          >
+          <span v-if="internalEnableSelectAll" v-show="!searchInput" class="nitrozen-option ripple"
+            @click="selectItem('all', all_option, $event)">
             <slot :item="all_option" :selected="allSelected" name="option">
               <div class="nitrozen-option-container">
-                <nitrozen-checkbox
-                  :checkboxValue="allSelected"
-                  :value="allSelected"
-                  @change="setCheckedItem"
-                  :ref="`multicheckbox-all`"
-                >
-                  <span
-                    class="nitrozen-option-image"
-                    :class="{
-                      'nitrozen-dropdown-multicheckbox-selected': allSelected,
-                    }"
-                  >All</span>
+                <nitrozen-checkbox :checkboxValue="allSelected" :value="allSelected" @change="setCheckedItem"
+                  :ref="`multicheckbox-all`">
+                  <span class="nitrozen-option-image" :class="{
+                    'nitrozen-dropdown-multicheckbox-selected': allSelected,
+                  }">All</span>
                 </nitrozen-checkbox>
               </div>
             </slot>
           </span>
-          <div
-            v-if="enable_select_all"
-            v-show="!searchInput"
-            class="horizantal-divider"
-          />
-          <span
-            v-for="(item, index) in filteredItems"
-            :key="index"
-            :data-value="item.value"
-            class="nitrozen-option ripple"
-            :class="{
+          <div v-if="internalEnableSelectAll" v-show="!searchInput" class="horizantal-divider" />
+          <span v-for="(item, index) in filteredItems" :key="index" :data-value="item.value"
+            class="nitrozen-option ripple" :class="{
               selected: item == selected,
               'nitrozen-option-group-label': item.isGroupLabel,
-            }"
-            @click="selectItem(index, item)"
-          >
+            }" @click="selectItem(index, item, $event)">
             <slot :item="item" :selected="item == selected" name="option">
               <div class="nitrozen-option-container">
                 <template v-if="multiple && !item.isGroupLabel">
-                  <nitrozen-checkbox
-                    :checkboxValue="item.value"
-                    @change="setCheckedItem"
-                    v-model="selectedItems"
-                    :ref="`multicheckbox-${index}`"
-                  >
-                    <span
-                      class="nitrozen-option-image"
-                      :class="{
-                        'nitrozen-dropdown-multicheckbox-selected': selectedItems.includes(
-                          item.value
-                        ),
-                      }"
-                    >
-                    <div v-if="item.logo" class="nitrozen-option-logo">
-                      <img
-                        class="nitrozen-option-logo"
-                        :src="item.logo"
-                        alt="logo"
-                         @error="handleImageError"
-                      />
-                    </div>
-                      {{ item.text }}</span
-                    >
+                  <nitrozen-checkbox :checkboxValue="item.value" @change="setCheckedItem" v-model="selectedItems"
+                    :ref="`multicheckbox-${index}`">
+                    <span class="nitrozen-option-image" :class="{
+                      'nitrozen-dropdown-multicheckbox-selected': selectedItems.includes(
+                        item.value
+                      ),
+                    }">
+                      <div v-if="item.logo" class="nitrozen-option-logo">
+                        <img class="nitrozen-option-logo" :src="item.logo" alt="logo" @error="handleImageError" />
+                      </div>
+                      {{ item.text }}
+                    </span>
                   </nitrozen-checkbox>
                 </template>
                 <template v-else>
-                  <span
-                    class="nitrozen-option-image"
-                    :class="{
-                      'nitrozen-option-child-label':
-                        items.find((i) => i.isGroupLabel) && !item.isGroupLabel,
-                    }"
-                  >
-                  <div  v-if="item.logo" class="nitrozen-option-logo">
-                    <img
-                      class="nitrozen-option-logo"
-                      :src="item.logo"
-                      alt="logo"
-                      @error="handleImageError"
-                    />
-                  </div>
+                  <span class="nitrozen-option-image" :class="{
+                    'nitrozen-option-child-label':
+                      items.find((i) => i.isGroupLabel) && !item.isGroupLabel,
+                  }">
+                    <div v-if="item.logo" class="nitrozen-option-logo">
+                      <img class="nitrozen-option-logo" :src="item.logo" alt="logo" @error="handleImageError" />
+                    </div>
                     {{ item.text }}
                   </span>
                 </template>
@@ -153,7 +91,7 @@
             </div>
           </div>
           <div v-else-if="filteredItems.length === 0 && !loading" class="nitrozen-option">
-            <div class="nitrozen-option-container">{{noresults_text}}</div>
+            <div class="nitrozen-option-container">{{ noresults_text }}</div>
           </div>
           <div v-else-if="loading" class="loader-container">
             <dropdown-loader />
@@ -178,7 +116,7 @@ export default {
     "nitrozen-inline": NitrozenInline,
     "nitrozen-checkbox": NitrozenCheckbox,
     "nitrozen-tooltip": NTooltip,
-    'dropdown-loader':DropdownLoader
+    'dropdown-loader': DropdownLoader
   },
   props: {
     /**
@@ -245,7 +183,7 @@ export default {
     /**
      * selected value
      */
-    value: {
+    modelValue: {
       required: true,
     },
     /**
@@ -277,8 +215,8 @@ export default {
     /**
      * autocomplete for searchable dropdown to disable auto complete
      */
-    autocomplete:{
-      type:String,
+    autocomplete: {
+      type: String,
       default: "off"
     }
   },
@@ -292,34 +230,47 @@ export default {
       viewport: null,
       allSelected: false,
       allOptionsSelected: false,
-      all_option: {'text': 'Select All', 'value': 'all'},
+      all_option: { 'text': 'Select All', 'value': 'all' },
+      internalEnableSelectAll: false
     };
   },
   watch: {
-    value() {
-      if (Array.isArray(this.value)) {
-        this.selectedItems = [...this.value];
+    modelValue() {
+      if (Array.isArray(this.modelValue)) {
+        this.selectedItems = [...this.modelValue];
       }
       if (!this.multiple && this.searchable) {
-        const selected = this.items.find((i) => i.value == this.value);
-        this.searchInput = selected ? selected.text : this.value;
+        const selected = this.items.find((i) => i.value == this.modelValue);
+        this.searchInput = selected ? selected.text : this.modelValue;
       }
       this.setAllOptions()
     },
     items: {
-      handler: function() {
+      handler: function () {
         this.setAllOptions()
+      }
+    },
+    enable_select_all: {
+      immediate: true,
+      handler(newValue) {
+        this.updateInternalSelectAllState();
+      }
+    },
+    multiple: {
+      immediate: true,
+      handler(newValue) {
+        this.updateInternalSelectAllState();
       }
     }
   },
   computed: {
-    selectedText: function() {
+    selectedText: function () {
       if (!this.multiple) {
         this.selected = {};
-        if (this.value) {
+        if (this.modelValue) {
           if (this.items.length) {
-            this.selected = this.items.find((i) => i.value == this.value);
-            this.searchInput = this.selected ? this.selected.text: '';
+            this.selected = this.items.find((i) => i.value == this.modelValue);
+            this.searchInput = this.selected ? this.selected.text : '';
           }
         }
         if (this.selected && this.selected.text) {
@@ -334,7 +285,7 @@ export default {
         }
         let tmp = [];
         let selected = {};
-        if (this.value) {
+        if (this.modelValue) {
           this.searchInput = "";
         }
         if (this.selectedItems.length) {
@@ -356,78 +307,85 @@ export default {
         return "";
       }
     },
-    searchInputPlaceholder: function() {
-      if (this.enable_select_all && this.selectedItems.length) {
-        if(this.selectedItems.length === this.getItems(this.items).length) {
+    searchInputPlaceholder: function () {
+      if (this.internalEnableSelectAll && this.selectedItems.length) {
+        if (this.selectedItems.length === this.getItems(this.items).length) {
           return this.allseleceted_text ? this.allseleceted_text : `All ${this.label ? this.label.toLowerCase() : ''} selected`;
         }
         return `${this.selectedItems.length} ${this.label ? this.label.toLowerCase() : ''} selected`
       }
       return this.placeholder || `Search ${this.label ? this.label.toLowerCase() : ''}`;
     },
-    noOptionForAddMoreProps: function() {
+    noOptionForAddMoreProps: function () {
       const message = `No ${this.label ? this.label.toLowerCase() : 'option'} found.`;
       const additionalMessage = 'Type and press enter to create new.';
       return [message, additionalMessage];
     },
 
     filteredItems() {
-    if (!this.searchable || !this.searchInput) {
-      return this.items;
+      if (!this.searchable || !this.searchInput) {
+        return this.items;
+      }
+      const term = this.searchInput.toLowerCase();
+      return this.items.filter(i =>
+        i.text.toLowerCase().includes(term)
+      );
+    },
+
+    hasExactMatch() {
+      const term = this.searchInput.trim().toLowerCase()
+      return this.items.some(
+        i => i.text.trim().toLowerCase() === term
+      )
+    },
+
+    showAddOption() {
+      return (
+        this.searchable &&
+        this.add_option &&
+        this.searchInput.trim().length > 0 &&
+        !this.hasExactMatch &&
+        !this.loading
+      )
     }
-    const term = this.searchInput.toLowerCase();
-    return this.items.filter(i =>
-      i.text.toLowerCase().includes(term)
-    );
-  },
-
-  hasExactMatch() {
-    const term = this.searchInput.trim().toLowerCase()
-    return this.items.some(
-      i => i.text.trim().toLowerCase() === term
-    )
-  },
-
-  showAddOption() {
-    return (
-      this.searchable &&
-      this.add_option &&
-      this.searchInput.trim().length > 0 &&
-      !this.hasExactMatch &&
-      !this.loading
-    )
-  }
   },
   mounted() {
     if (!this.multiple) {
-      this.enable_select_all = false;
-      if (this.value) {
-        const selected = this.items.find((i) => i.value == this.value);
+      if (this.modelValue) {
+        const selected = this.items.find((i) => i.value == this.modelValue);
         this.searchInput = selected ? selected.text : "";
       }
     } else {
-      if (this.value) {
-        this.selectedItems = [...this.value];
+      if (this.modelValue) {
+        this.selectedItems = [...this.modelValue];
         this.searchInput = "";
         this.setAllOptions(true)
       }
     }
   },
   methods: {
+    updateInternalSelectAllState() {
+      this.internalEnableSelectAll = this.multiple && this.enable_select_all;
+    },
     getItems(items) {
-      return items.filter(function(item){return !item.isGroupLabel}).map(item => item.value)
+      return items.filter(function (item) { return !item.isGroupLabel }).map(item => item.value)
     },
-    setAllOptions(mounted=false) {
+    setAllOptions(mounted = false) {
       let items = [...this.items];
-      if(mounted) {
-        items = [...this.value]
+      if (mounted && Array.isArray(this.modelValue)) {
+        items = [...this.modelValue]
       }
-      if (this.multiple && this.enable_select_all) {
-        this.allOptionsSelected = this.selectedItems.length === this.getItems(items).length && this.enable_select_all;
+      if (this.multiple && this.internalEnableSelectAll) {
+        const validItems = Array.isArray(this.items) ? this.getItems(this.items) : [];
+        this.allOptionsSelected = this.selectedItems.length === validItems.length && this.internalEnableSelectAll;
         this.allSelected = this.allOptionsSelected;
+      } else {
+        // Reset if not applicable
+        this.allOptionsSelected = false;
+        this.allSelected = false;
       }
     },
-    selectItem(index, item) {
+    selectItem(index, item, event) {
       if (item.isGroupLabel) {
         return;
       }
@@ -437,7 +395,7 @@ export default {
         if (item.text) {
           this.searchInput = item.text;
         }
-        this.$emit("input", item.value); // v-model implementation
+        this.$emit("update:modelValue", item.value); // v-model implementation
         this.$emit("change", item.value);
       } else {
         if (index === 'all') {
@@ -447,27 +405,27 @@ export default {
           } else {
             this.selectedItems = []
           }
-			    const multicheckbox = this.$refs[`multicheckbox-${index}`];
+          const multicheckbox = this.$refs[`multicheckbox-${index}`];
 
-			    if (multicheckbox) multicheckbox.toggleAll(this.selectedItems);
-			    event.stopPropagation();
+          if (multicheckbox) multicheckbox.toggleAll(this.selectedItems);
+          if (event) event.stopPropagation();
         } else {
-          	const multicheckbox = this.$refs[`multicheckbox-${index}`][0];
-          	if (multicheckbox) multicheckbox.toggle();
-          	event.stopPropagation();
-			      this.allSelected = this.allOptionsSelected;
+          const multicheckbox = this.$refs[`multicheckbox-${index}`][0];
+          if (multicheckbox) multicheckbox.toggle();
+          if (event) event.stopPropagation();
+          this.allSelected = this.allOptionsSelected;
         }
       }
     },
     addOption() {
-        let value = this.searchInput;
-        this.searchInput = '';
-        this.$emit("addOption", value);
-        this.eventEmit({}, "searchInputChange");
-        this.calculateViewport();
+      let value = this.searchInput;
+      this.searchInput = '';
+      this.$emit("addOption", value);
+      this.eventEmit({}, "searchInputChange");
+      this.calculateViewport();
     },
     setCheckedItem() {
-      this.$emit("input", this.selectedItems); // v-model implementation
+      this.$emit("update:modelValue", this.selectedItems); // v-model implementation
       this.$emit("change", this.selectedItems);
     },
     searchInputChange(e) {
@@ -532,11 +490,11 @@ export default {
     handleScroll(event) {
       let elem = this.$refs["nitrozen-select-option"];
       this.$emit("scroll", elem);
-      if(event.target.scrollTop + event.target.clientHeight + LOADER_HEIGHT >= event.target.scrollHeight){
-        if(!this.loading){this.$emit('fetchMoreData');}
+      if (event.target.scrollTop + event.target.clientHeight + LOADER_HEIGHT >= event.target.scrollHeight) {
+        if (!this.loading) { this.$emit('fetchMoreData'); }
       }
     },
-    handleTABKey: function(event) {
+    handleTABKey: function (event) {
       // TAB key detection
       if (event.keyCode == 9 && this.showOptions) {
         event.preventDefault();
@@ -544,7 +502,7 @@ export default {
         this.showOptions = false;
       }
     },
-    handleImageError: function(event) {
+    handleImageError: function (event) {
       event.target.src = fallbackImage;
     }
   },
@@ -559,7 +517,7 @@ export default {
       window.addEventListener("scroll", this.calculateViewport);
     }
   },
-  destroyed() {
+  unmounted() {
     document.removeEventListener("click", this.documentClick);
     document.removeEventListener("keydown", this.handleTABKey);
     window.removeEventListener("resize", this.calculateViewport);
@@ -569,22 +527,26 @@ export default {
 </script>
 <style lang="less">
 @import "./NDropdown.less";
+
 .nitrozen-searchable-input-container {
   width: 100%;
+
   input {
     font-size: 14px;
     width: 100%;
     border: none;
   }
+
   input:focus,
   textarea:focus {
     outline: none;
   }
 }
+
 .horizantal-divider {
-    height: 1px;
-    width: 100%;
-    background-color: lightgrey;
-    margin: 5px 0;
+  height: 1px;
+  width: 100%;
+  background-color: lightgrey;
+  margin: 5px 0;
 }
 </style>

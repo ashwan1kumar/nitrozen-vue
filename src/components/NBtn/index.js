@@ -1,2 +1,2 @@
-import NBtn from './NBtn'
+import NBtn from './NBtn.vue'
 export default NBtn;

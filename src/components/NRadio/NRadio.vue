@@ -5,7 +5,7 @@
       type="radio"
       @input="changeEvent($event,'input')"
       @change="changeEvent($event,'change')"
-      :checked="value==radioValue"
+      :checked="modelValue==radioValue"
       :value="radioValue"
       :name="name"
       :disabled="disabled"
@@ -41,11 +41,10 @@ export default {
       required: true,
       default: () => "nitrozen-radio-name"
     },
-    value: {}
+    modelValue: {}
   },
   data() {
-      return{
-      }
+      return {}
   },
   methods: {
     changeEvent: function(event,type){

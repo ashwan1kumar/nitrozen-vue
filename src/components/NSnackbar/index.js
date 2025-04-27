@@ -9,14 +9,14 @@ import { Snackbar as T } from './js/snackbar';
 import NitrozenSnackbar from './NSnackbar.vue';
 
 const NSnackbar = {
-    install(Vue, options) {
+    install(app, options) {
         if (!options) {
             options = {};
         }
 
         const Snack = new T(options);
-        Vue.component('nitrozen-snackbar', NitrozenSnackbar);
-        Vue.Snackbar = Vue.snackbar = Vue.prototype.$snackbar = Snack;
+        app.component('nitrozen-snackbar', NitrozenSnackbar);
+        app.config.globalProperties.Snackbar = app.config.globalProperties.snackbar = app.config.globalProperties.$snackbar = Snack;
     }
 };
 

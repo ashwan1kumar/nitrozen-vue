@@ -1,6 +1,6 @@
 <script>
 import NIconButtonContent from './NIconBtnContent';
-
+import {h} from 'vue';
 export default {
     name: 'nitrozen-icon-button',
     components: {
@@ -45,27 +45,24 @@ export default {
             default: false
         },
     },
-    render(createElement) {
-        const slotElement = createElement('n-icbutton-content', {
-            props: {
-                showProgress: this.showProgress,
-                icon: this.icon
-            }
+    render() {
+        const nIconButton = h('n-icbutton-content', {
+            showProgress: this.showProgress,
+            icon: this.icon
         }, [
             this.$slots.default,
-            createElement('div', {
+            h('div', {
                 class: 'icon-wrapper'
-            }, [createElement('nitrozen-inline', {
+            }, [h('nitrozen-inline', {
                 class: ['white-dots'], // add optionall
-                props: {
-                    icon: this.icon // take it from prop of icon btn
-                },
+                icon: this.icon
             })]),
         ])
 
         let buttonAttrs = {
-            staticClass: 'n-icbutton ',
-            class: [{
+            class: [
+            'n-icbutton',    
+            {
                 'n-icbutton-rounded': this.rounded,
                 'n-icbutton-large': this.size == 'large',
                 'n-icbutton-small': this.size == 'small',
@@ -90,9 +87,7 @@ export default {
             tag = 'a';
             buttonAttrs
         }
-        // const slotElement = this.content;
-        // const slotElement = createElement('slot');
-        return createElement(tag, buttonAttrs, [slotElement])
+        return h(tag, buttonAttrs, [nIconButton])
     }
 }
 </script>

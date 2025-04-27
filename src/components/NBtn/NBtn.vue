@@ -1,7 +1,8 @@
 <script>
-import NButtonContent from './NBtnContent';
+import NButtonContent from './NBtnContent.vue';
 import strokeBtn from './../../directives/NStrokeBtn.js'
 import flatBtn from './../../directives/NFlatBtn.js'
+import { h } from 'vue';
 
 export default {
     name: 'nitrozen-button',
@@ -47,41 +48,37 @@ export default {
             type: String
         }
     },
-    render(createElement) {
-        const slotElement = createElement('n-button-content', {
-            props: {
-                showProgress: this.showProgress,
-                icon: this.icon
-            }
-        }, this.$slots.default)
+    render() {
+        const nButtonContent = h(NButtonContent, {
+
+            showProgress: this.showProgress,
+            icon: this.icon
+        }, this.$slots.default
+        );
 
         let buttonAttrs = {
-            staticClass: 'n-button ripple',
-            class: [{
-                'n-button-rounded': this.rounded,
-                'n-button-primary': this.theme == 'primary',
-                'n-button-secondary': this.theme == 'secondary',
-                'n-button-large': this.size == 'large',
-                'n-button-mid': this.size == 'medium',
-                'n-button-focused': this.focused
-            }],
+            class: [
+                'n-button ripple',
+                {
+                    'n-button-rounded': this.rounded,
+                    'n-button-primary': this.theme == 'primary',
+                    'n-button-secondary': this.theme == 'secondary',
+                    'n-button-large': this.size == 'large',
+                    'n-button-mid': this.size == 'medium',
+                    'n-button-focused': this.focused
+                }],
             attrs: {
                 href: this.href,
                 disabled: this.disabled,
                 type: !this.href && (this.type || 'button')
             },
-            on: {
-                ...this.$listeners,
-            }
         }
         let tag = 'button';
         if (this.href) {
             tag = 'a';
             buttonAttrs
         }
-        // const slotElement = this.content;
-        // const slotElement = createElement('slot');
-        return createElement(tag, buttonAttrs, [slotElement])
+        return h(tag, buttonAttrs, [nButtonContent])
     }
 }
 </script>

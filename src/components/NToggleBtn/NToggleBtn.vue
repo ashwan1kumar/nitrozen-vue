@@ -1,7 +1,7 @@
 <template>
     <div class="nitrozen-toggle-container">
         <label class="nitrozen-switch">
-            <input type="checkbox" @change="change" :disabled="disabled" :checked="value" :value="value" />
+            <input type="checkbox" @change="change" :disabled="disabled" :checked="modelValue" :value="modelValue" />
             <span class="nitrozen-slider nitrozen-round" :class="{ 'nitrozen-disabled': disabled }"></span>
         </label>
     </div>
@@ -23,7 +23,7 @@ export default {
             type: Boolean,
             default: false,
         },
-        value: {
+        modelValue: {
             type: Boolean,
             default: false,
         },
@@ -36,7 +36,7 @@ export default {
     methods: {
         change(event) {
             // console.log(this.value,'selectedState',this.selectedState)
-            this.$emit("input", event.target.checked);
+            this.$emit("update:modelValue", event.target.checked);
             this.$emit('change', event);
         }
     }

@@ -1,3 +1,3 @@
-import NTabItem from './NTabItem';
+import NTabItem from './NTabItem.vue';
 
 export default NTabItem
