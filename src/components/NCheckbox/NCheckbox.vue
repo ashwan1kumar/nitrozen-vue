@@ -66,7 +66,7 @@ export default {
       }
     },
     toggleAll: function(items) {
-        this.$emit("update:modelValue", checkboxModel);
+        this.$emit("update:modelValue", this.modelValue);
         this.$emit("change", items);
     }
   }

@@ -1,17 +1,11 @@
 <script>
 import NButtonContent from './NBtnContent.vue';
-import strokeBtn from './../../directives/NStrokeBtn.js'
-import flatBtn from './../../directives/NFlatBtn.js'
 import { h } from 'vue';
 
 export default {
     name: 'nitrozen-button',
     components: {
         NButtonContent
-    },
-    directives: {
-        strokeBtn,
-        flatBtn
     },
     props: {
         href: {
