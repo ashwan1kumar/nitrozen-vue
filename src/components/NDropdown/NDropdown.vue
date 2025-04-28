@@ -46,7 +46,7 @@
         >
 
           <span 
-            v-if="enable_select_all"
+            v-if="internalEnableSelectAll"
             v-show="!searchInput"
             class="nitrozen-option ripple"
             @click="selectItem('all', all_option)"
@@ -70,7 +70,7 @@
             </slot>
           </span>
           <div
-            v-if="enable_select_all"
+            v-if="internalEnableSelectAll"
             v-show="!searchInput"
             class="horizantal-divider"
           />
@@ -293,6 +293,7 @@ export default {
       allSelected: false,
       allOptionsSelected: false,
       all_option: {'text': 'Select All', 'value': 'all'},
+      internalEnableSelectAll: false
     };
   },
   watch: {
@@ -310,7 +311,19 @@ export default {
       handler: function() {
         this.setAllOptions()
       }
-    }
+    },
+    enable_select_all: {
+      immediate: true,
+      handler(newValue) {
+        this.updateInternalSelectAllState();
+      }
+    },
+    multiple: {
+       immediate: true,
+       handler(newValue) {
+         this.updateInternalSelectAllState();
+       }
+     },
   },
   computed: {
     selectedText: function() {
@@ -357,7 +370,7 @@ export default {
       }
     },
     searchInputPlaceholder: function() {
-      if (this.enable_select_all && this.selectedItems.length) {
+      if (this.internalEnableSelectAll && this.selectedItems.length) {
         if(this.selectedItems.length === this.getItems(this.items).length) {
           return this.allseleceted_text ? this.allseleceted_text : `All ${this.label ? this.label.toLowerCase() : ''} selected`;
         }
@@ -400,7 +413,6 @@ export default {
   },
   mounted() {
     if (!this.multiple) {
-      this.enable_select_all = false;
       if (this.value) {
         const selected = this.items.find((i) => i.value == this.value);
         this.searchInput = selected ? selected.text : "";
@@ -414,6 +426,9 @@ export default {
     }
   },
   methods: {
+    updateInternalSelectAllState() {
+      this.internalEnableSelectAll = this.multiple && this.enable_select_all;
+    },
     getItems(items) {
       return items.filter(function(item){return !item.isGroupLabel}).map(item => item.value)
     },
@@ -422,8 +437,8 @@ export default {
       if(mounted) {
         items = [...this.value]
       }
-      if (this.multiple && this.enable_select_all) {
-        this.allOptionsSelected = this.selectedItems.length === this.getItems(items).length && this.enable_select_all;
+      if (this.multiple && this.internalEnableSelectAll) {
+        this.allOptionsSelected = this.selectedItems.length === this.getItems(items).length && this.internalEnableSelectAll;
         this.allSelected = this.allOptionsSelected;
       }
     },
